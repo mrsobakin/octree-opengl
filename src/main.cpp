@@ -104,50 +104,51 @@ int main() {
         -1, -1, -1
     };
 
+    // UNCOMMENT IF NEEDED
     // vertex normal data
-    static const int gVertexNormalData[] = {
-        0,  1,  0,
-        0,  1,  0,
-        0,  1,  0,
-        0,  1,  0,
-        0,  1,  0,
-        0,  1,  0,
+    //static const int gVertexNormalData[] = {
+        //0,  1,  0,
+        //0,  1,  0,
+        //0,  1,  0,
+        //0,  1,  0,
+        //0,  1,  0,
+        //0,  1,  0,
 
-        0, -1,  0,
-        0, -1,  0,
-        0, -1,  0,
-        0, -1,  0,
-        0, -1,  0,
-        0, -1,  0,
+        //0, -1,  0,
+        //0, -1,  0,
+        //0, -1,  0,
+        //0, -1,  0,
+        //0, -1,  0,
+        //0, -1,  0,
 
-        1, 0,  0,
-        1, 0,  0,
-        1, 0,  0,
-        1, 0,  0,
-        1, 0,  0,
-        1, 0,  0,
+        //1, 0,  0,
+        //1, 0,  0,
+        //1, 0,  0,
+        //1, 0,  0,
+        //1, 0,  0,
+        //1, 0,  0,
 
-        -1, 0,  0,
-        -1, 0,  0,
-        -1, 0,  0,
-        -1, 0,  0,
-        -1, 0,  0,
-        -1, 0,  0,
+        //-1, 0,  0,
+        //-1, 0,  0,
+        //-1, 0,  0,
+        //-1, 0,  0,
+        //-1, 0,  0,
+        //-1, 0,  0,
 
-        0,  0,  1, 
-        0,  0,  1, 
-        0,  0,  1, 
-        0,  0,  1, 
-        0,  0,  1, 
-        0,  0,  1, 
+        //0,  0,  1, 
+        //0,  0,  1, 
+        //0,  0,  1, 
+        //0,  0,  1, 
+        //0,  0,  1, 
+        //0,  0,  1, 
 
-        0,  0, -1, 
-        0,  0, -1, 
-        0,  0, -1, 
-        0,  0, -1, 
-        0,  0, -1, 
-        0,  0, -1 
-    };
+        //0,  0, -1, 
+        //0,  0, -1, 
+        //0,  0, -1, 
+        //0,  0, -1, 
+        //0,  0, -1, 
+        //0,  0, -1 
+    //};
 
     // VBO init
     GLuint vertexbuffer;
@@ -157,11 +158,11 @@ int main() {
             GL_STATIC_DRAW);
     // normal buffer init
 
-    GLuint normalBuffer;
-    glGenBuffers(1, &normalBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gVertexNormalData), gVertexNormalData,
-            GL_STATIC_DRAW);
+    //GLuint normalBuffer;
+    //glGenBuffers(1, &normalBuffer);
+    //glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(gVertexNormalData), gVertexNormalData,
+            //GL_STATIC_DRAW);
 
     // link shaders from the project directory
     GLuint programID = createShaderProgram(
@@ -185,7 +186,23 @@ int main() {
 #endif
     glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
+
+    auto drawMode = GL_TRIANGLES;
+
+
     while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+
+        // change draw mode
+        /////////
+        if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+            drawMode = GL_LINES;
+        }
+        if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+            drawMode = GL_TRIANGLES;
+        }
+        //////////
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -201,29 +218,28 @@ int main() {
                 (void *)0 // array buffer offset
                 );
         // normal buffer
-        glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-        glVertexAttribPointer(
-                1,
-                3,
-                GL_INT,
-                GL_FALSE,
-                0,
-                (void *)0
-                );
+        //glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+        //glVertexAttribPointer(
+                //1,
+                //3,
+                //GL_INT,
+                //GL_FALSE,
+                //0,
+                //(void *)0
+                //);
 
         // apply mvp matrix
         getMVPMatrix(mvp);
         glUniformMatrix4fv(matrixID, 1, GL_FALSE, &mvp[0][0]);
 
         // Draw the triangle !
-        glDrawArrays(GL_TRIANGLES, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        glDrawArrays(drawMode, 0, 12*3); // Starting from vertex 0; 3 vertices total -> 1 triangle
         glDisableVertexAttribArray(0);
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
-    // cleanup
+    // Cleanup
 
     // VBO cleanup
     glDeleteBuffers(1, &vertexbuffer);
